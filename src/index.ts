@@ -18,6 +18,8 @@ function parseBadgeOptions(query: any): BadgeOptions {
   };
 }
 
+app.use(express.static('public'));
+
 app.get('/api/badge', async (req: Request, res: Response) => {
   const user = req.query.user as string;
   if (!user) {
@@ -37,7 +39,7 @@ app.get('/api/badge', async (req: Request, res: Response) => {
 });
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('GitSince Badge Service is running! Use /api/badge?user=USERNAME');
+  res.sendFile(__dirname + '/../public/index.html');
 });
 
 app.listen(PORT, () => {
