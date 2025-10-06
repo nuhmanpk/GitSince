@@ -2,6 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 
+/** Calculate years since a given date */
 function yearsSince(date: string): number {
   const joined = new Date(date);
   const now = new Date();
@@ -15,6 +16,7 @@ function yearsSince(date: string): number {
   return years;
 }
 
+/** Badge options interface */
 export interface BadgeOptions {
   label?: string;              // Main title
   message?: string;            // Secondary message
@@ -26,6 +28,7 @@ export interface BadgeOptions {
   emojiPosition?: 'left' | 'right' | 'none'; // Emoji placement
 }
 
+/** Generate the SVG badge */
 export async function getBadgeSVG(user: string, options: BadgeOptions = {}): Promise<string> {
   // Fetch GitHub user data
   const resp = await axios.get(`https://api.github.com/users/${user}`);
@@ -70,14 +73,14 @@ export async function getBadgeSVG(user: string, options: BadgeOptions = {}): Pro
   // Rounded corners
   const rx = style === 'rounded' ? height / 2 : 8;
 
-  // Emoji placement
+  // Emoji placement: only show if no image
   let emojiSvg = '';
-  if (emojiPosition !== 'none') {
+  if (!badgeImg && emojiPosition !== 'none') {
     const x = emojiPosition === 'left' ? 10 : width - 36 - 10;
     emojiSvg = `<text x="${x + 18}" y="${height / 2 + 6}" font-size="24" text-anchor="middle" dominant-baseline="middle">${emoji}</text>`;
   }
 
-  // SVG
+  // SVG generation
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   ${style === 'gradient' ? `
@@ -99,14 +102,14 @@ export async function getBadgeSVG(user: string, options: BadgeOptions = {}): Pro
 </svg>`;
 }
 
-// Level logic
+/** Determine badge level based on years */
 function getLevel(years: number): number {
   if (years < 1) return 1;
   if (years >= 11) return 11;
   return years + 1;
 }
 
-// Titles and emoji
+/** Get the title and emoji for the badge */
 function getTitleAndEmoji(years: number): { title: string; emoji: string } {
   const levels = [
     { title: 'New to GitHub', emoji: '🌱' },
