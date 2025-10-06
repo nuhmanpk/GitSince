@@ -54,6 +54,7 @@ Paste the badge URL in your README:
 - SVG rendering
 
 <img src="https://git-since.vercel.app/api/badge?user=nuhmanpk&theme=dark&style=gradient&width=500&height=200&emojiPosition=right" alt="GitSince badge" />
+<img src="https://git-since.vercel.app/api/badge?user=nuhmanpk&theme=dark&size=small" alt="GitSince badge" />
 
 
 ## Roadmap
