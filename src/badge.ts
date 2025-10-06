@@ -15,7 +15,7 @@ function yearsSince(date: string): number {
   return years;
 }
 
-interface BadgeOptions {
+export interface BadgeOptions {
   label?: string;              // Main title
   message?: string;            // Secondary message
   theme?: 'light' | 'dark';    // Background/foreground theme
