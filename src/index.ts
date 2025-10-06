@@ -13,8 +13,10 @@ function parseBadgeOptions(query: any): BadgeOptions {
     style: ['flat', 'rounded', 'gradient'].includes(query.style) ? query.style : 'flat',
     width: query.width ? parseInt(query.width) : undefined,
     height: query.height ? parseInt(query.height) : undefined,
-    emojiPosition: ['left', 'right', 'none'].includes(query.emojiPosition) ? query.emojiPosition : 'left',
+    imagePosition: ['left', 'right'].includes(query.imagePosition) ? query.imagePosition : 'left',
     embedImg: query.embedImg !== 'false', // default true
+    size: ['small', 'medium', 'large'].includes(query.size) ? query.size : 'medium',
+    fontSize: query.fontSize
   };
 }
 

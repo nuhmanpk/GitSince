@@ -34,17 +34,18 @@ Paste the badge URL in your README:
 <img src="https://git-since.vercel.app/api/badge?user=nuhmanpk" alt="GitSince badge" />
 ```
 
-| Parameter       | Type                                | Default              | Description                                                        |
-| --------------- | ----------------------------------- | -------------------- | ------------------------------------------------------------------ |
-| `user`          | `string`                            | **Required**         | GitHub username to generate the badge for.                         |
-| `theme`         | `'light'` or `'dark'`               | `'light'`            | Sets background and text colors.                                   |
-| `style`         | `'flat'`, `'rounded'`, `'gradient'` | `'flat'`             | Controls badge shape and design style.                             |
-| `width`         | `number`                            | `320`                | Width of the badge in pixels.                                      |
-| `height`        | `number`                            | `48`                 | Height of the badge in pixels.                                     |
-| `emojiPosition` | `'left'`, `'right'`, `'none'`       | `'left'`             | Position of the emoji on the badge (only shown if no image).       |
-| `label`         | `string`                            | Title based on years | Main text displayed on the badge.                                  |
-| `message`       | `string`                            | `"X Years of Code"`  | Secondary message on the badge.                                    |
-| `embedImg`      | `true` or `false`                   | `true`               | Embed badge PNG as base64 (recommended for serverless deployment). |
+| Parameter       | Type                                         | Default               | Description                                                        |
+| --------------- | -------------------------------------------- | --------------------- | ------------------------------------------------------------------ |
+| `label`         | `string`                                     | Title based on years  | Main text displayed on the badge.                                  |
+| `message`       | `string`                                     | `"X Year(s) of Code"` | Secondary message on the badge.                                    |
+| `theme`         | `'light'` or `'dark'`                        | `'light'`             | Sets background and text colors.                                   |
+| `style`         | `'flat'`, `'rounded'`, `'gradient'`          | `'flat'`              | Controls badge shape and design style.                             |
+| `size`          | `'small'`, `'medium'`, `'large'`, `'custom'` | `'medium'`            | Preset badge size; determines width/height unless `custom`.        |
+| `width`         | `number`                                     | Depends on `size`     | Width of the badge in pixels; used only if `size` is `'custom'`.   |
+| `height`        | `number`                                     | Depends on `size`     | Height of the badge in pixels; used only if `size` is `'custom'`.  |
+| `imagePosition` | `'left'` or `'right'`                        | `'left'`              | Position of the embedded badge image.                              |
+| `embedImg`      | `true` or `false`                            | `true`                | Embed badge PNG as base64 (recommended for serverless deployment). |
+| `fontSize`      | `number`                                     | `16`                  | Font size of the main label; message font is slightly smaller.     |
 
 
 ## Development

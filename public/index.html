@@ -148,22 +148,36 @@
   </div>
 
   <div class="form-group">
-    <label for="width">Width (px):</label>
+    <label>Size:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="size" value="small"> Small</label>
+      <label><input type="radio" name="size" value="medium" checked> Medium</label>
+      <label><input type="radio" name="size" value="large"> Large</label>
+      <label><input type="radio" name="size" value="custom"> Custom</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="width">Width (px, only for custom size):</label>
     <input type="number" id="width" value="320">
   </div>
 
   <div class="form-group">
-    <label for="height">Height (px):</label>
+    <label for="height">Height (px, only for custom size):</label>
     <input type="number" id="height" value="100">
   </div>
 
   <div class="form-group">
-    <label>Emoji Position:</label>
+    <label>Image Position:</label>
     <div class="radio-group">
-      <label><input type="radio" name="emojiPosition" value="left" checked> Left</label>
-      <label><input type="radio" name="emojiPosition" value="right"> Right</label>
-      <label><input type="radio" name="emojiPosition" value="none"> None</label>
+      <label><input type="radio" name="imagePosition" value="left" checked> Left</label>
+      <label><input type="radio" name="imagePosition" value="right"> Right</label>
     </div>
+  </div>
+
+  <div class="form-group">
+    <label for="fontSize">Label Font Size:</label>
+    <input type="number" id="fontSize" value="16">
   </div>
 
   <div class="form-group">
@@ -201,16 +215,23 @@
     const username = document.getElementById('username').value.trim();
     const theme = document.querySelector('input[name="theme"]:checked').value;
     const style = document.querySelector('input[name="style"]:checked').value;
+    const size = document.querySelector('input[name="size"]:checked').value;
     const width = document.getElementById('width').value;
     const height = document.getElementById('height').value;
-    const emojiPosition = document.querySelector('input[name="emojiPosition"]:checked').value;
+    const imagePosition = document.querySelector('input[name="imagePosition"]:checked').value;
+    const fontSize = document.getElementById('fontSize').value;
     const label = document.getElementById('labelText').value;
     const message = document.getElementById('messageText').value;
     const embedImg = document.getElementById('embedImg').checked;
 
-    const url = `${BASE_URL}?user=${encodeURIComponent(username)}&theme=${theme}&style=${style}&width=${width}&height=${height}&emojiPosition=${emojiPosition}&embedImg=${embedImg}` +
-                (label ? `&label=${encodeURIComponent(label)}` : '') +
-                (message ? `&message=${encodeURIComponent(message)}` : '');
+    let url = `${BASE_URL}?user=${encodeURIComponent(username)}&theme=${theme}&style=${style}&size=${size}&imagePosition=${imagePosition}&embedImg=${embedImg}&fontSize=${fontSize}`;
+
+    if (size === 'custom') {
+      url += `&width=${width}&height=${height}`;
+    }
+
+    if (label) url += `&label=${encodeURIComponent(label)}`;
+    if (message) url += `&message=${encodeURIComponent(message)}`;
 
     const loader = document.getElementById('loader');
     const badge = document.getElementById('badgePreview');
@@ -218,7 +239,6 @@
     badge.style.display = 'none';
     loader.style.display = 'block';
 
-    // Preload image to show loader
     const img = new Image();
     img.src = url;
     img.onload = () => {
@@ -228,7 +248,6 @@
     }
   }
 
-  // Generate initial badge
   window.onload = updateBadge;
 </script>
 
