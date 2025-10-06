@@ -15,7 +15,11 @@ GitSince is an open-source service that generates dynamic, personalized SVG badg
 Paste the badge URL in your README:
 
 ```
-<img src="https://your-deployment-url/api/badge?user=USERNAME" alt="GitSince badge" />
+<img src="https://git-since.vercel.app/api/badge?user=USERNAME" alt="GitSince badge" />
+```
+
+```
+<img src="https://git-since.vercel.app/api/badge?user=nuhmanpk" alt="GitSince badge" />
 ```
 
 ## Development
@@ -27,5 +31,3 @@ Paste the badge URL in your README:
 - Achievement badges for milestones (e.g., 100 repos)
 - More themes and icons
 
----
-MIT License
