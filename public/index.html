@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitSince Badge Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+      letter-spacing: 1px;
+    }
+    main {
+      flex: 1;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 2px solid #4a90e2;
+      border-radius: 4px;
+      outline: none;
+      transition: 0.2s;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: #357abd;
+    }
+    .radio-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .radio-group label {
+      font-weight: normal;
+    }
+    button {
+      padding: 10px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #357abd;
+    }
+    .badge-container {
+      text-align: center;
+      margin-top: 30px;
+      position: relative;
+    }
+    #loader {
+      display: none;
+      margin: 20px auto;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #4a90e2;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    #badgePreview {
+      max-width: 100%;
+      margin-top: 10px;
+      display: none;
+      border-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      background: #eee;
+    }
+    footer a {
+      margin: 0 10px;
+      color: #4a90e2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>GitSince Badge Generator</h1>
+</header>
+
+<main>
+  <div class="form-group">
+    <label for="username">GitHub Username:</label>
+    <input type="text" id="username" value="nuhmanpk">
+  </div>
+
+  <div class="form-group">
+    <label>Theme:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="theme" value="light" checked> Light</label>
+      <label><input type="radio" name="theme" value="dark"> Dark</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Style:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="style" value="flat" checked> Flat</label>
+      <label><input type="radio" name="style" value="rounded"> Rounded</label>
+      <label><input type="radio" name="style" value="gradient"> Gradient</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="width">Width (px):</label>
+    <input type="number" id="width" value="320">
+  </div>
+
+  <div class="form-group">
+    <label for="height">Height (px):</label>
+    <input type="number" id="height" value="100">
+  </div>
+
+  <div class="form-group">
+    <label>Emoji Position:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="emojiPosition" value="left" checked> Left</label>
+      <label><input type="radio" name="emojiPosition" value="right"> Right</label>
+      <label><input type="radio" name="emojiPosition" value="none"> None</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="labelText">Label:</label>
+    <input type="text" id="labelText" placeholder="Title based on years">
+  </div>
+
+  <div class="form-group">
+    <label for="messageText">Message:</label>
+    <input type="text" id="messageText" placeholder="X Years of Code">
+  </div>
+
+  <div class="form-group">
+    <label><input type="checkbox" id="embedImg" checked> Embed Image as Base64</label>
+  </div>
+
+  <button onclick="updateBadge()">Generate Badge</button>
+
+  <div class="badge-container">
+    <div id="loader"></div>
+    <img id="badgePreview" src="" alt="GitSince Badge Preview">
+  </div>
+</main>
+
+<footer>
+  <a href="https://github.com/nuhmanpk" target="_blank">GitHub</a> |
+  <a href="https://github.com/sponsors/nuhmanpk" target="_blank">Sponsor</a> |
+  <a href="https://github.com/nuhmanpk/GitSince" target="_blank">Repo</a>
+</footer>
+
+<script>
+  const BASE_URL = "https://git-since.vercel.app/api/badge";
+
+  function updateBadge() {
+    const username = document.getElementById('username').value.trim();
+    const theme = document.querySelector('input[name="theme"]:checked').value;
+    const style = document.querySelector('input[name="style"]:checked').value;
+    const width = document.getElementById('width').value;
+    const height = document.getElementById('height').value;
+    const emojiPosition = document.querySelector('input[name="emojiPosition"]:checked').value;
+    const label = document.getElementById('labelText').value;
+    const message = document.getElementById('messageText').value;
+    const embedImg = document.getElementById('embedImg').checked;
+
+    const url = `${BASE_URL}?user=${encodeURIComponent(username)}&theme=${theme}&style=${style}&width=${width}&height=${height}&emojiPosition=${emojiPosition}&embedImg=${embedImg}` +
+                (label ? `&label=${encodeURIComponent(label)}` : '') +
+                (message ? `&message=${encodeURIComponent(message)}` : '');
+
+    const loader = document.getElementById('loader');
+    const badge = document.getElementById('badgePreview');
+
+    badge.style.display = 'none';
+    loader.style.display = 'block';
+
+    // Preload image to show loader
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      loader.style.display = 'none';
+      badge.src = url;
+      badge.style.display = 'inline-block';
+    }
+  }
+
+  // Generate initial badge
+  window.onload = updateBadge;
+</script>
+
+</body>
+</html>
