@@ -8,6 +8,14 @@
 
 GitSince is an open-source service that generates dynamic, personalized SVG badges showing how long you've been on GitHub. Just add a badge link to your README and it updates automatically!
 
+![Vercel](https://img.shields.io/badge/powered%20by-Vercel-000000?style=flat-square&logo=vercel)
+![GitHub license](https://img.shields.io/github/license/nuhmanpk/GitSince?style=flat-square)
+![GitSince](https://img.shields.io/badge/GitSince-Active-blue?style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/nuhmanpk/GitSince?style=flat-square)
+![GitHub forks](https://img.shields.io/github/forks/nuhmanpk/GitSince?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/nuhmanpk/GitSince?style=flat-square)
+
+
 ## Features
 - Fetches your GitHub join date via the GitHub API
 - Renders a customizable SVG badge (e.g., "On GitHub since 2017" or "8 Years of Code 🧑‍💻")
