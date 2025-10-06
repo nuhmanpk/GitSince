@@ -16,10 +16,14 @@ function yearsSince(date: string): number {
 }
 
 interface BadgeOptions {
-  label?: string;
-  message?: string;
-  theme?: 'light' | 'dark';
-  embedImg?: boolean;
+  label?: string;              // Main title
+  message?: string;            // Secondary message
+  theme?: 'light' | 'dark';    // Background/foreground theme
+  embedImg?: boolean;          // Embed badge image as base64
+  style?: 'flat' | 'rounded' | 'gradient'; // Badge style
+  width?: number;              // Width of the badge
+  height?: number;             // Height of the badge
+  emojiPosition?: 'left' | 'right' | 'none'; // Emoji placement
 }
 
 export async function getBadgeSVG(user: string, options: BadgeOptions = {}): Promise<string> {
@@ -32,12 +36,16 @@ export async function getBadgeSVG(user: string, options: BadgeOptions = {}): Pro
 
   // Default options
   const label = options.label || `${title}`;
-  const message = options.message || `${years} Year${years === 1 ? '' : 's'} of Code ${emoji}`;
+  const message = options.message || `${years} Year${years === 1 ? '' : 's'} of Code`;
   const theme = options.theme || 'light';
-  const embedImg = options.embedImg !== false; // default to true
+  const embedImg = options.embedImg !== false; // default true
+  const style = options.style || 'flat';
+  const width = options.width || 320;
+  const height = options.height || 48;
+  const emojiPosition = options.emojiPosition || 'left';
 
   // Prepare badge image
-  let badgeImg: string;
+  let badgeImg: string = '';
   if (embedImg) {
     const imgPath = path.resolve(__dirname, `../assets/badges/${level}.png`);
     try {
@@ -47,28 +55,58 @@ export async function getBadgeSVG(user: string, options: BadgeOptions = {}): Pro
     } catch (e) {
       badgeImg = '';
     }
-  } else {
-    badgeImg = `/assets/badges/${level}.png`;
   }
 
-  const bg = theme === 'dark' ? '#222' : '#fff';
-  const fg = theme === 'dark' ? '#fff' : '#222';
+  // Colors
+  let bg: string, fg: string;
+  if (theme === 'dark') {
+    fg = '#fff';
+    bg = style === 'gradient' ? 'url(#gradDark)' : '#222';
+  } else {
+    fg = '#222';
+    bg = style === 'gradient' ? 'url(#gradLight)' : '#fff';
+  }
 
+  // Rounded corners
+  const rx = style === 'rounded' ? height / 2 : 8;
+
+  // Emoji placement
+  let emojiSvg = '';
+  if (emojiPosition !== 'none') {
+    const x = emojiPosition === 'left' ? 10 : width - 36 - 10;
+    emojiSvg = `<text x="${x + 18}" y="${height / 2 + 6}" font-size="24" text-anchor="middle" dominant-baseline="middle">${emoji}</text>`;
+  }
+
+  // SVG
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="320" height="48" xmlns="http://www.w3.org/2000/svg">
-  <rect rx="8" width="320" height="48" fill="${bg}"/>
-  <image href="${badgeImg}" x="10" y="6" height="36" width="36"/>
-  <text x="56" y="26" font-size="16" fill="${fg}" font-family="Verdana">${label}</text>
-  <text x="56" y="42" font-size="12" fill="${fg}" font-family="Verdana">${message}</text>
+<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  ${style === 'gradient' ? `
+  <defs>
+    <linearGradient id="gradLight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fad0c4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradDark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#434343;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+  </defs>` : ''}
+  <rect rx="${rx}" width="${width}" height="${height}" fill="${bg}"/>
+  ${badgeImg ? `<image href="${badgeImg}" x="10" y="6" height="${height-12}" width="${height-12}"/>` : ''}
+  ${emojiSvg}
+  <text x="${height + 10}" y="${height / 2 - 2}" font-size="16" fill="${fg}" font-family="Verdana" dominant-baseline="middle">${label}</text>
+  <text x="${height + 10}" y="${height / 2 + 16}" font-size="12" fill="${fg}" font-family="Verdana" dominant-baseline="middle">${message}</text>
 </svg>`;
 }
 
+// Level logic
 function getLevel(years: number): number {
   if (years < 1) return 1;
   if (years >= 11) return 11;
   return years + 1;
 }
 
+// Titles and emoji
 function getTitleAndEmoji(years: number): { title: string; emoji: string } {
   const levels = [
     { title: 'New to GitHub', emoji: '🌱' },
